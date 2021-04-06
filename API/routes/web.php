@@ -13,25 +13,37 @@
 |
 */
 
+
+// exibe a versão do lumen e do php 
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+
+// mapeamento de rotas para a funcionalidade do cliente
 $router->group(['prefix' => 'cliente'], function () use ($router) {
 
     // lista todos os usuario 
-    $router->get('/lista', ['as' => 'lista-cliente', 'uses' => 'ClienteController@show']);
+    $router->get('/listar', ['as' => 'lista-cliente', 'uses' => 'ClienteController@show']);
     
     // cadastra um usuario 
     $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'ClienteController@create']);
 
 });
 
+// mapeamento de rotas para a funcionalidade da empresa
 $router->group(['prefix' => 'empresa'], function () use ($router) {
 
     // lista todos os usuario 
-    $router->get('/lista', ['as' => 'lista-empresa', 'uses' => 'EmpresaController@show']);
+    $router->get('/listar', ['as' => 'lista-empresa', 'uses' => 'EmpresaController@show']);
     
+    // cadastra um usuario 
+    $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'EmpresaController@create']);
+
+});
+// mapeamento de rotas para a funcionalidade da empresa
+$router->group(['prefix' => 'conta'], function () use ($router) {
+
     // cadastra um usuario 
     $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'EmpresaController@create']);
 

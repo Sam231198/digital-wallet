@@ -12,7 +12,7 @@ class EmpresaController extends Controller
 
     public function show()
     {
-        return Empresa::all();
+        return response(Empresa::all(), 200);
     }
 
     public function create(Request $request)
@@ -28,17 +28,15 @@ class EmpresaController extends Controller
             ]);
             // $empresa = Empresa::saved();
 
-            Conta::create([
-                "id_user" => $empresa->id,
+            $conta = Conta::create([
+                "user" => $empresa->cnpj,
                 "tipo_conta" => "Pessoa Jurídica",
             ]);
 
-            return response(json_encode(["messenger" => "cadastrado"]), 201);
+            return response(json_encode(["empresa" => $empresa, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
             if ($empresa)
-
-
-                return response(json_encode(["messenger" => $th->getMessage()]), 400);
+                return response(json_encode(["messenger" => $th->getMessage()]), 500);
         }
     }
 }
