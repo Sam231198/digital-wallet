@@ -6,9 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class Empresa extends Model
 {
-    protected $table = 'conta';
+    protected $table = 'empresa';
 
+        
     protected $fillable = [
-        'cnpj', 'email',
+        "id",
+        "nome",
+        "cnpj",
+        "email",
+        "senha",
+        "created_at",
+        "updated_at"
     ];
 }

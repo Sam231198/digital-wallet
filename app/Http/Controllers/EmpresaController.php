@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Empresa;
 use App\Models\Conta;
 use Illuminate\Http\Request;
+use Laravel\Lumen\Routing\Controller;
 
 class EmpresaController extends Controller
 {

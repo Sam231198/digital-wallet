@@ -26,3 +26,13 @@ $router->group(['prefix' => 'cliente'], function () use ($router) {
     $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'ClienteController@create']);
 
 });
+
+$router->group(['prefix' => 'empresa'], function () use ($router) {
+
+    // lista todos os usuario 
+    $router->get('/lista', ['as' => 'lista-empresa', 'uses' => 'EmpresaController@show']);
+    
+    // cadastra um usuario 
+    $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'EmpresaController@create']);
+
+});
