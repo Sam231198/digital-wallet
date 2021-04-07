@@ -33,10 +33,10 @@ class EmpresaController extends Controller
                 "tipo_conta" => "Pessoa Jurídica",
             ]);
 
-            return response(json_encode(["empresa" => $empresa, "conta" => $conta]), 201);
+            return response(json_encode(["perfil" => $empresa, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
             if ($empresa)
-                return response(json_encode(["messenger" => $th->getMessage()]), 500);
+                return response(json_encode(["message" => $th->getMessage()]), 500);
         }
     }
 }

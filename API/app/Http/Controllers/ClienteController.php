@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Cliente;
 use App\Models\Conta;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
+use PHPUnit\Framework\MockObject\Stub\ReturnSelf;
 
 class ClienteController extends Controller
 {
@@ -53,25 +55,14 @@ class ClienteController extends Controller
 
             $conta = Conta::create([
                 "user" => $cliente->cpf,
+                "saldo" => ($request->saldo) ? $request->saldo : 0.00,
                 "tipo_conta" => "Pessoa Física",
             ]);
 
-            return response(json_encode(["cliente" => $cliente, "conta" => $conta]), 201);
+            return response(json_encode(["perfil" => $cliente, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
             if ($cliente)
-                return response(json_encode(["messenger" => $th->getMessage()]), 500);
-        }
-    }
-
-
-    function createConta(Request $request)
-    {
-        $cliente = Cliente::where('cpf', $request->cpf)
-            ->where('cpf', $request->cpf)
-            ->get();
-        
-        if($cliente){
-            return 
+                return response(json_encode(["message" => $th->getMessage()]), 500);
         }
     }
 }

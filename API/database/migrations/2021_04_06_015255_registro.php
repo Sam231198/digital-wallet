@@ -15,9 +15,9 @@ class Registro extends Migration
     {
         Schema::create('registro', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("id_emissor")->nullable();
-            $table->foreignId("id_receptor");
-            $table->float('valor')->unique();
+            $table->string("emissor");
+            $table->string("receptor");
+            $table->float('valor');
             $table->string('descricao');
             $table->timestamps();
         });
