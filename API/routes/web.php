@@ -31,12 +31,13 @@ $router->group(['prefix' => 'cliente'], function () use ($router) {
 
 });
 
-// mapeamento de rotas para a funcionalidade da empresa
+// mapeamento de rotas para a funcionalidade da conta
 $router->group(['prefix' => 'conta'], function () use ($router) {
 
-    // cadastra um usuario 
+    // consulta conta
     $router->post('/consulta', ['as' => 'consultar-conta', 'uses' => 'ContaController@consultaConta']);
     
+    // realizar tranferencia
     $router->post('/transferencia', ['as' => 'transferencia-conta', 'uses' => 'ContaController@transferencia']);
 });
 

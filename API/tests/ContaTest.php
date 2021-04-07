@@ -11,17 +11,25 @@ class ContaTest extends TestCase
     public function testConsultaConta()
     {
         $this->post('/conta/consulta', [
-            // 'cpf' => '06685136162',
-            'cbpj' => '84814927000155',
+            'cpf' => '06685136162',
+            // 'cnpj' => '84814927000155',
             'senha' => '123'
         ]);
 
-        $this->response->assertOk();
+        $this->response->assertJsonFragment([
+            'cpf' => '06685136162',
+            "email"=>"samuelmarques231198@gmail.com",
+            "nome"=>"Samuel Marques"
+
+            // 'cnpj' => '84814927000155',
+            // "email"=>"samuelmarques231198@outlook.com",
+            // "nome"=>"Dev PHP"
+        ]);
     }
 
     public function testTransferencia()
     {
-        $this->post('/conta/transferencia',[
+        $this->post('/conta/transferencia', [
             'cpf' => '06685136162',
             'senha' => '123',
             'valor' => 10.00,
@@ -33,6 +41,5 @@ class ContaTest extends TestCase
             'valor' => 10.00,
             'receptor' => '84814927000155'
         ]);
-
     }
 }
