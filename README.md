@@ -13,21 +13,21 @@ Uma API que simula uma um carteira digital simples que realizar transições ent
 
  Faça o clone desse repositório em sua maquina local:
 ```bash
-git clone https://github.com/Sam231198/digital_wallet  
+$ git clone https://github.com/Sam231198/digital_wallet  
 ```
 
-Depois que o clone do projeto estiver conclui, dentro da pasta raiz do projeto rode o `composer` para instalar as dependências:
+Depois que o clone do projeto estiver concluido, dentro da pasta raiz do projeto rode o `composer` para instalar as dependências:
 ```bash
-cd  digital_wallet
-composer install
+$ cd digital_wallet
+$ composer install
 ```
 
 Em seguida rode a `migrate` para gerar o banco:
 ```php
-php artisan migrate
+$ php artisan migrate
 ```
 
 por fim vamos rodar a aplicação:
 ```php
-php -S localhost:8000 -t public
+$ php -S localhost:8000 -t public
 ```
