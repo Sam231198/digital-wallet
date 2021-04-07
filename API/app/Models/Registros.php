@@ -4,17 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Empresa extends Model
+class Registros extends Model
 {
-    protected $table = 'empresa';
+    protected $table = 'registros';
 
-        
     protected $fillable = [
         "id",
-        "nome",
-        "cnpj",
-        "email",
-        "senha",
+        "emissor",
+        "receptor",
+        "valor",
+        "descricao",
         "created_at",
         "updated_at"
     ];

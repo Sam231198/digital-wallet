@@ -2,27 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
-use App\Models\Conta;
+use App\Models\Usuarios;
+use App\Models\Contas;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
-use PHPUnit\Framework\MockObject\Stub\ReturnSelf;
 
-class ClienteController extends Controller
+class UsuariosController extends Controller
 {
 
 
     /**
      * 
-     * Função que retorna um autoload em json das informações do cliente
+     * Função que retorna um autoload em json das informações do Usuarios
      * 
      * @return response
      * 
      */
     public function show()
     {
-        return response(Cliente::all(), 200);
+        return response(Usuarios::all(), 200);
     }
 
     /**
@@ -43,25 +41,24 @@ class ClienteController extends Controller
      */
     public function create(Request $request)
     {
-        $cliente = 0;
 
         try {
-            $cliente = Cliente::create([
+            $usuario = Usuarios::create([
                 "nome" => $request->nome,
-                "cpf" => $request->cpf,
+                "codigo_pessoa" => $request->codigo_pessoa,
+                "tipo" => (strlen($request->codigo_pessoa) > 11)?'PJ':'PF',
                 "email" => $request->email,
                 "senha" => md5($request->senha),
             ]);
 
-            $conta = Conta::create([
-                "user" => $cliente->cpf,
+            $conta = Contas::create([
+                "user" => $usuario->codigo_pessoa,
                 "saldo" => ($request->saldo) ? $request->saldo : 0.00,
-                "tipo_conta" => "Pessoa Física",
             ]);
 
-            return response(json_encode(["perfil" => $cliente, "conta" => $conta]), 201);
+            return response(json_encode(["perfil" => $usuario, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
-            if ($cliente)
+            if ($usuario)
                 return response(json_encode(["message" => $th->getMessage()]), 500);
         }
     }

@@ -21,13 +21,13 @@ $router->get('/', function () use ($router) {
 
 
 // mapeamento de rotas para a funcionalidade do cliente
-$router->group(['prefix' => 'cliente'], function () use ($router) {
+$router->group(['prefix' => 'usuarios'], function () use ($router) {
 
     // lista todos os usuario 
-    $router->get('/listar', ['as' => 'lista-cliente', 'uses' => 'ClienteController@show']);
+    $router->get('/listar', ['as' => 'lista-cliente', 'uses' => 'UsuariosController@show']);
     
     // cadastra um usuario 
-    $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'ClienteController@create']);
+    $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'UsuariosController@create']);
 
 });
 
@@ -35,20 +35,9 @@ $router->group(['prefix' => 'cliente'], function () use ($router) {
 $router->group(['prefix' => 'conta'], function () use ($router) {
 
     // consulta conta
-    $router->post('/consulta', ['as' => 'consultar-conta', 'uses' => 'ContaController@consultaConta']);
+    $router->post('/consulta', ['as' => 'consultar-conta', 'uses' => 'ContasController@consultaConta']);
     
     // realizar tranferencia
-    $router->post('/transferencia', ['as' => 'transferencia-conta', 'uses' => 'ContaController@transferencia']);
+    $router->post('/transferencia', ['as' => 'transferencia-conta', 'uses' => 'ContasController@transferencia']);
 });
-
-// mapeamento de rotas para a funcionalidade da empresa
-$router->group(['prefix' => 'empresa'], function () use ($router) {
-
-    // lista todos os usuario 
-    $router->get('/listar', ['as' => 'lista-empresa', 'uses' => 'EmpresaController@show']);
-    
-    // cadastra um usuario 
-    $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'EmpresaController@create']);
-
-});
-    
+   

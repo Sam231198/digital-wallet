@@ -13,7 +13,7 @@ class Registro extends Migration
      */
     public function up()
     {
-        Schema::create('registro', function (Blueprint $table) {
+        Schema::create('registros', function (Blueprint $table) {
             $table->id();
             $table->string("emissor");
             $table->string("receptor");

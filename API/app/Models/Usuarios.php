@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Registro extends Model
+class Usuarios extends Model
 {
-    protected $table = 'registro';
-
+    protected $table = 'usuarios';
+    
     protected $fillable = [
         "id",
-        "emissor",
-        "receptor",
-        "valor",
-        "descricao",
+        "nome",
+        "codigo_pessoa",
+        "email",
+        "senha",
+        "tipo",
         "created_at",
         "updated_at"
     ];
