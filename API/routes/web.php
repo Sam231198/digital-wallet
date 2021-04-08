@@ -21,13 +21,13 @@ $router->get('/', function () use ($router) {
 
 
 // mapeamento de rotas para a funcionalidade do cliente
-$router->group(['prefix' => 'cliente'], function () use ($router) {
+$router->group(['prefix' => 'pf'], function () use ($router) {
 
     // lista todos os usuario 
-    $router->get('/listar', ['as' => 'lista-cliente', 'uses' => 'ClienteController@show']);
+    $router->get('/listar', ['as' => 'lista-cliente', 'uses' => 'PessoaFisicaController@show']);
     
     // cadastra um usuario 
-    $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'ClienteController@create']);
+    $router->post('/cadastrar', ['as' => 'cadastrar-cliente', 'uses' => 'PessoaFisicaController@create']);
 
 });
 
@@ -42,13 +42,13 @@ $router->group(['prefix' => 'conta'], function () use ($router) {
 });
 
 // mapeamento de rotas para a funcionalidade da empresa
-$router->group(['prefix' => 'empresa'], function () use ($router) {
+$router->group(['prefix' => 'pj'], function () use ($router) {
 
     // lista todos os usuario 
-    $router->get('/listar', ['as' => 'lista-empresa', 'uses' => 'EmpresaController@show']);
+    $router->get('/listar', ['as' => 'lista-empresa', 'uses' => 'PessoaJuridicaController@show']);
     
     // cadastra um usuario 
-    $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'EmpresaController@create']);
+    $router->post('/cadastrar', ['as' => 'cadastrar-empresa', 'uses' => 'PessoaJuridicaController@create']);
 
 });
     

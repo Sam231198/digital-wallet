@@ -4,14 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cliente extends Model
+class PessoaJuridica extends Model
 {
-    protected $table = 'cliente';
-    
+    protected $table = 'pessoa_juridica';
+
+        
     protected $fillable = [
         "id",
         "nome",
-        "cpf",
+        "cnpj",
         "email",
         "senha",
         "created_at",

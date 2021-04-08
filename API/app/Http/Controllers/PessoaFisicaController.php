@@ -2,27 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cliente;
 use App\Models\Conta;
+use App\Models\PessoaFisica;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
-use PHPUnit\Framework\MockObject\Stub\ReturnSelf;
 
-class ClienteController extends Controller
+class PessoaFisicaController extends Controller
 {
 
 
     /**
      * 
-     * Função que retorna um autoload em json das informações do cliente
+     * Função que retorna um autoload em json das informações do PessoaFisica
      * 
      * @return response
      * 
      */
     public function show()
     {
-        return response(Cliente::all(), 200);
+        $result = PessoaFisica::all();
+        foreach ($result as $value) {
+            unset($value->senha);
+        }
+        return response($result, 200);
     }
 
     /**
@@ -43,10 +45,9 @@ class ClienteController extends Controller
      */
     public function create(Request $request)
     {
-        $cliente = 0;
 
         try {
-            $cliente = Cliente::create([
+            $pessoaFisica = PessoaFisica::create([
                 "nome" => $request->nome,
                 "cpf" => $request->cpf,
                 "email" => $request->email,
@@ -54,14 +55,14 @@ class ClienteController extends Controller
             ]);
 
             $conta = Conta::create([
-                "user" => $cliente->cpf,
+                "user" => $pessoaFisica->cpf,
                 "saldo" => ($request->saldo) ? $request->saldo : 0.00,
-                "tipo_conta" => "Pessoa Física",
+                "tipo_conta" => "PF",
             ]);
 
-            return response(json_encode(["perfil" => $cliente, "conta" => $conta]), 201);
+            return response(json_encode(["perfil" => $pessoaFisica, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
-            if ($cliente)
+            if (!empty($pessoaFisica))
                 return response(json_encode(["message" => $th->getMessage()]), 500);
         }
     }

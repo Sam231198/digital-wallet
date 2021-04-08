@@ -2,40 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Empresa;
 use App\Models\Conta;
+use App\Models\PessoaJuridica;
 use Illuminate\Http\Request;
 use Laravel\Lumen\Routing\Controller;
 
-class EmpresaController extends Controller
+class PessoaJuridicaController extends Controller
 {
 
     public function show()
     {
-        return response(Empresa::all(), 200);
+        $result = PessoaJuridica::all();
+        foreach ($result as $value) {
+            unset($value->senha);
+        }
+        return response($result, 200);
     }
 
     public function create(Request $request)
     {
-        $empresa = 0;
+        $pessoaJuridica = 0;
 
         try {
-            $empresa = Empresa::create([
+            $pessoaJuridica = PessoaJuridica::create([
                 "nome" => $request->nome,
                 "cnpj" => $request->cnpj,
                 "email" => $request->email,
                 "senha" => md5($request->senha),
             ]);
-            // $empresa = Empresa::saved();
+            // $pessoaJuridica = PessoaJuridica::saved();
 
             $conta = Conta::create([
-                "user" => $empresa->cnpj,
-                "tipo_conta" => "Pessoa Jurídica",
+                "user" => $pessoaJuridica->cnpj,
+                "tipo_conta" => "PJ",
             ]);
 
-            return response(json_encode(["perfil" => $empresa, "conta" => $conta]), 201);
+            return response(json_encode(["perfil" => $pessoaJuridica, "conta" => $conta]), 201);
         } catch (\Throwable $th) {
-            if ($empresa)
+            if ($pessoaJuridica)
                 return response(json_encode(["message" => $th->getMessage()]), 500);
         }
     }

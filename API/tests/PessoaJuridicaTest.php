@@ -5,13 +5,13 @@ namespace Test;
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
 
-class EmpresaTest extends TestCase
+class PessoaJuridicaTest extends TestCase
 {
 
-    public function testCadastroEmpresa()
+    public function testCadastroPJ()
     {
 
-        $this->post('/empresa/cadastrar', [
+        $this->post('/pj/cadastrar', [
             'nome' => 'Dev PHP',
             'cnpj' => '84814927000155',
             'email' => 'samuelmarques231198@outlook.com',
@@ -25,9 +25,9 @@ class EmpresaTest extends TestCase
         ]);
     }
 
-    public function testListagemEmpresa()
+    public function testListagemPJ()
     {
-        $this->get('/empresa/listar');
+        $this->get('/pj/listar');
 
         $this->response->assertJsonFragment([
             'nome' => 'Dev PHP',
@@ -35,4 +35,5 @@ class EmpresaTest extends TestCase
             'email' => 'samuelmarques231198@outlook.com'
         ]);
     }
+
 }

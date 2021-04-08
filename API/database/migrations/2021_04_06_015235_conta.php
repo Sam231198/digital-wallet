@@ -17,7 +17,7 @@ class Conta extends Migration
             $table->id();
             $table->string("user")->unique();
             $table->float("saldo")->default(0.00);
-            $table->string("tipo_conta");
+            $table->enum("tipo_conta", ["PF","PJ"]);
             $table->timestamps();
         });
     }

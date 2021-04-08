@@ -7,6 +7,7 @@ use App\Models\Registro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
+use stdClass;
 
 class ContaController extends Controller
 {
@@ -31,13 +32,13 @@ class ContaController extends Controller
             $autenticar = $this->autenticar($request);
 
             // verifica o statos da altenticação: true || false
-            if ($autenticar['status']) {
+            if ($autenticar->status) {
 
                 $user = (isset($request->cnpj)) ? $request->cnpj : $request->cpf;
 
                 // retorna os dados do perfil conta e registros
                 return response(json_encode([
-                    'perfil' => $autenticar['perfil'],
+                    'perfil' => $autenticar->perfil,
                     'conta' => Conta::where('user', $user)->get(),
                     'registro' => DB::table('registro')->where(function ($query) use ($user) {
                         $query->where('emissor', $user)->orWhere('receptor', $user);
@@ -66,34 +67,38 @@ class ContaController extends Controller
             // autenticando usuario 
             $autenticar = $this->autenticar($request);
 
-            // verifica o estatus da autenticação e se a conta é do tipo 'cliente'
-            if ($autenticar['status'] && $autenticar['tipo'] === 'cliente') {
+            // buscando a conta do emissor 
+            $contaEmissor = Conta::firstWhere('user', $autenticar->perfil->cpf);
 
-                $conta = Conta::firstWhere('user', $autenticar['perfil']->cpf);
+            // verifica o estatus da autenticação e se a conta é do tipo 'PF' (Pessoa Física)
+            if ($autenticar->status && $contaEmissor->tipo_conta == "PF") {
+                $contaReceptor = Conta::firstWhere('user', $request->receptor);
 
                 // verifica se o cliente tem saldo suficiente para a tranferencia
-                if ($conta->saldo >= $request->valor) {
+                if ($contaEmissor->saldo >= $request->valor) {
 
-                    // consulta o muck externo de autorização 
-                    $mock_autorizar = json_decode(file_get_contents('https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6'));
+                    // consulta o muck externo de autorização
+                    $rsponse_mock = file_get_contents('https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6');
+                    $mock_autorizar = json_decode($rsponse_mock);
                     if ($mock_autorizar->message === "Autorizado") {
 
-                        $contaReceptor = Conta::firstWhere('user', $request->receptor);
 
                         // mantei salvo os saldos das contas antes da transferencia para retorna o valor em caso de erro
-                        $saldoOldReceptor = $contaReceptor->saldo;
-                        $saldoOldEmissor = $conta->saldo;
+                        $saldoOld = new stdClass();
+                        $saldoOld->receptor = $contaReceptor->saldo;
+                        $saldoOld->emissor = $contaEmissor->saldo;
 
                         // tenta realizar a transferencia 
                         try {
 
                             $contaReceptor->saldo = $contaReceptor->saldo + $request->valor;
-                            $conta->saldo = $conta->saldo - $request->valor;
+                            $contaEmissor->saldo = $contaEmissor->saldo - $request->valor;
 
-                            // verifica se o serviço externo está disponivel 
-                            if (checkdnsrr('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04')) {
+                            // verifica se o serviço externo está disponivel
+                            $confirmacaoEnvio = $this->verificarURL('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04');
+                            if ($confirmacaoEnvio) {
 
-                                if ($conta->save() && $contaReceptor->save()) {
+                                if ($contaEmissor->save() && $contaReceptor->save()) {
                                     $registro = Registro::create([
                                         'emissor' => $request->cpf,
                                         'receptor' => $request->receptor,
@@ -106,30 +111,34 @@ class ContaController extends Controller
                                         return response(json_encode(["registro" => $registro, $mock_autorizar]), 200);
                                     } else {
                                         // caso ocorra um erro na transferencia os valores serão extornados 
-                                        $conta->saldo = $saldoOldEmissor;
-                                        $conta->save();
-
-                                        $contaReceptor->saldo = $saldoOldReceptor;
+                                        $contaEmissor->saldo = $saldoOld->emissor;
+                                        $contaEmissor->save();
+                                        $contaReceptor->saldo = $saldoOld->receptor;
                                         $contaReceptor->save();
 
-                                        return response(json_encode([$mock_autorizar]), 400);
+                                        return response(json_encode([$mock_autorizar, "extorno" => $request->valor]), 400);
                                     }
                                 } else {
                                     return response($mock_autorizar, 400);
                                 }
                             } else {
-                                return response(json_encode(["message" => "Sistema externo não indisponivel"]), 503);
+                                return response(json_encode([
+                                    "message" => "Sistema externo não indisponivel", "variavel" => $confirmacaoEnvio
+                                ]), 503);
                             }
                         } catch (\Throwable $th) {
 
                             // caso ocorra um erro na transferencia os valores serão extornados 
-                            $conta->saldo = $saldoOldEmissor;
-                            $conta->save();
+                            $contaEmissor->saldo = $saldoOld->emissor;
+                            $contaEmissor->save();
 
-                            $contaReceptor->saldo = $saldoOldReceptor;
+                            $contaReceptor->saldo = $saldoOld->receptor;
                             $contaReceptor->save();
 
-                            return response(json_encode(["message" => "transição não efetuada, dinheiro foi estornado", "erro" => $th->getMessage()]), 400);
+                            return response(json_encode([
+                                "message" => "transição não efetuada,
+                                dinheiro foi estornado", "erro" => $th->getMessage()
+                            ]), 400);
                         }
                     } else {
                         return response(json_encode(["message" => "transição não autorizada"]), 401);
@@ -138,7 +147,12 @@ class ContaController extends Controller
                     return response(json_encode(["message" => "Você não tem saldo suficiente"]), 400);
                 }
             } else {
-                return response(json_encode(["message" => "Você não tem permissão para realizar transições"]), 401);
+                return response(
+                    json_encode([
+                        "message" => "Você não tem permissão para realizar transições"
+                    ]),
+                    401
+                );
             }
         } catch (\Throwable $th) {
             return response(json_encode(["message" => $th->getMessage()]), 500);
@@ -150,17 +164,18 @@ class ContaController extends Controller
      * 
      * Função de autenticação do usuario
      * 
-     * @return Array
+     * @return Object
      * 
      */
-    function autenticar($request)
+    protected function autenticar($request)
     {
-        if ($request->cpf) $banco = 'cliente';
-        elseif ($request->cnpj) $banco = 'empresa';
+        $banco = ($request->cpf) ? 'pessoa_fisica' : 'pessoa_juridica';
+        $colum = ($request->cpf) ? 'cpf' : 'cnpj';
+        $value = ($request->cpf) ? $request->cpf : $request->cnpj;
 
         $perfil = DB::table($banco)
             ->where([
-                [($request->cpf) ? 'cpf' : 'cnpj', '=', ($request->cpf) ? $request->cpf : $request->cnpj],
+                [$colum, '=', $value],
                 ['senha', '=', md5($request->senha)]
             ])
             ->get()[0];
@@ -168,9 +183,27 @@ class ContaController extends Controller
         unset($perfil->senha);
 
         if ($perfil->id) {
-            return ['perfil' => $perfil, 'tipo' => $banco, 'status' => true];
+            $array = ['perfil' => $perfil, 'status' => true];
+            return (object) $array;
         } else {
-            return ['status' => false];
+            $array = ['status' => false];
+            return (object) $array;
         }
+    }
+
+
+    protected function verificarURL($url)
+    {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_URL, $url);             // Inicia uma nova sessão do cURL
+        curl_setopt($curl, CURLOPT_NOBODY, true);          // Define que iremos realizar uma requisição "HEAD"
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false); // Não exibir a saída no navegador
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Não verificar o certificado do site
+
+        curl_exec($curl);  // Executa a sessão do cURL
+        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE) === 200; // Se a resposta for OK, a URL está ativa
+        curl_close($curl); // Fecha a sessão do cURL
+
+        return $status;
     }
 }
