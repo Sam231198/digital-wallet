@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Usuarios extends Migration
+class Empresa extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class Usuarios extends Migration
      */
     public function up()
     {
-        Schema::create('usuarios', function (Blueprint $table) {
+        Schema::create('empresa', function (Blueprint $table) {
+            $table->id();
             $table->string('nome');
-            $table->string('codigo_pessoa')->primary()->key();
-            $table->enum('tipo',['PF', 'PJ']);
+            $table->string('cnpj')->unique();
             $table->string('email')->unique();
             $table->string('senha');
             $table->timestamps();

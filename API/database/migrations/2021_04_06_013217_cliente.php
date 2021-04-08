@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class Conta extends Migration
+class Cliente extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class Conta extends Migration
      */
     public function up()
     {
-        Schema::create('conta', function (Blueprint $table) {
+        Schema::create('cliente', function (Blueprint $table) {
             $table->id();
-            $table->string("user")->unique();
-            $table->float("saldo")->default(0.00);
-            $table->string("tipo_conta");
+            $table->string('nome');
+            $table->string('cpf')->unique();
+            $table->string('email')->unique();
+            $table->string('senha');
             $table->timestamps();
         });
     }

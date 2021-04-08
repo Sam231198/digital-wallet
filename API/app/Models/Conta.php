@@ -4,16 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Contas extends Model
+class Conta extends Model
 {
-    protected $table = 'contas';
 
     protected $fillable = [
         "id",
         "user",
         "saldo",
+        "tipo_conta",
         "created_at",
         "updated_at"
     ];
 
+    protected $table = 'conta';
 }

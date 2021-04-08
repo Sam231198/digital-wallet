@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Contas;
-use App\Models\Registros;
+use App\Models\Conta;
+use App\Models\Registro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
 
-class ContasController extends Controller
+class ContaController extends Controller
 {
 
     /**
@@ -38,7 +38,7 @@ class ContasController extends Controller
                 // retorna os dados do perfil conta e registros
                 return response(json_encode([
                     'perfil' => $autenticar['perfil'],
-                    'conta' => Contas::where('user', $user)->get(),
+                    'conta' => Conta::where('user', $user)->get(),
                     'registro' => DB::table('registro')->where(function ($query) use ($user) {
                         $query->where('emissor', $user)->orWhere('receptor', $user);
                     })->get()
@@ -69,7 +69,7 @@ class ContasController extends Controller
             // verifica o estatus da autenticação e se a conta é do tipo 'cliente'
             if ($autenticar['status'] && $autenticar['tipo'] === 'cliente') {
 
-                $conta = Contas::firstWhere('user', $autenticar['perfil']->cpf);
+                $conta = Conta::firstWhere('user', $autenticar['perfil']->cpf);
 
                 // verifica se o cliente tem saldo suficiente para a tranferencia
                 if ($conta->saldo >= $request->valor) {
@@ -78,7 +78,7 @@ class ContasController extends Controller
                     $mock_autorizar = json_decode(file_get_contents('https://run.mocky.io/v3/8fafdd68-a090-496f-8c9a-3442cf30dae6'));
                     if ($mock_autorizar->message === "Autorizado") {
 
-                        $contaReceptor = Contas::firstWhere('user', $request->receptor);
+                        $contaReceptor = Conta::firstWhere('user', $request->receptor);
 
                         // mantei salvo os saldos das contas antes da transferencia para retorna o valor em caso de erro
                         $saldoOldReceptor = $contaReceptor->saldo;
@@ -94,7 +94,7 @@ class ContasController extends Controller
                             if (checkdnsrr('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04')) {
 
                                 if ($conta->save() && $contaReceptor->save()) {
-                                    $registro = Registros::create([
+                                    $registro = Registro::create([
                                         'emissor' => $request->cpf,
                                         'receptor' => $request->receptor,
                                         'valor' => $request->valor,
