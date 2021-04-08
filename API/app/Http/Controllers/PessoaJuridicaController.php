@@ -5,21 +5,23 @@ namespace App\Http\Controllers;
 use App\Models\Conta;
 use App\Models\PessoaJuridica;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller;
 
 class PessoaJuridicaController extends Controller
 {
 
-    public function show()
+    public function show(): Response
     {
         $result = PessoaJuridica::all();
-        foreach ($result as $value) {
-            unset($value->senha);
-        }
+        if ($result[0])
+            foreach ($result as $value) {
+                unset($value->senha);
+            }
         return response($result, 200);
     }
 
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
         $pessoaJuridica = 0;
 

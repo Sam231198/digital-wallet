@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Conta;
 use App\Models\PessoaFisica;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller;
 
 class PessoaFisicaController extends Controller
@@ -18,12 +19,13 @@ class PessoaFisicaController extends Controller
      * @return response
      * 
      */
-    public function show()
+    public function show(): Response
     {
         $result = PessoaFisica::all();
-        foreach ($result as $value) {
-            unset($value->senha);
-        }
+        if ($result[0])
+            foreach ($result as $value) {
+                unset($value->senha);
+            }
         return response($result, 200);
     }
 
@@ -43,7 +45,7 @@ class PessoaFisicaController extends Controller
      * @return response
      * 
      */
-    public function create(Request $request)
+    public function create(Request $request): Response
     {
 
         try {
