@@ -108,7 +108,7 @@ class ContaController extends Controller
 
                                     $mock_autorizar = json_decode(file_get_contents('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04'));
                                     if ($mock_autorizar->message === "Enviado") {
-                                        return response(json_encode(["registro" => $registro, $mock_autorizar]), 200);
+                                        return response(json_encode(["registro" => $registro, "message" => $mock_autorizar->message]), 200);
                                     } else {
                                         // caso ocorra um erro na transferencia os valores serão extornados 
                                         $contaEmissor->saldo = $saldoOld->emissor;
