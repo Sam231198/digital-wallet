@@ -75,7 +75,7 @@ Para cadastrar uma pessoas jurídica basta fazer uma requisição `POST` para `l
 > Ao final do cadastro será retornado um JSON com as informações da conta.
 
 ### Consultar Conta
-Para consultar a conta, deve se fazer uma requisição `POST` para `localhost:8000/conta/consulta`.
+Para consultar a conta, deve se fazer uma requisição `POST` para `localhost:8000/conta/consulta` passando os valores em JSON listados nos exemplos.
 
 Exemplo de consulta da conta de uma pessoa física:
 ```json
@@ -107,7 +107,7 @@ Para realizar uma transferência é necessário fazer uma requisição `POST` pa
 	"receptor" : "84814927000155"
 }
 ```
-> Serpa retornado um JSON com informações de registro da transição.
+> Será retornado um JSON com informações de registro da transição.
 
 > Apenas a pessoa física ode realizar transferência, pessoa jurídica só pode receber apenas.
 
