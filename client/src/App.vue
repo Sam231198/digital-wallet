@@ -1,29 +1,30 @@
 <template>
   <div id="app">
-
-    <v-navigation-drawer v-model="drawer" absolute bottom temporary app>
-        
+    <v-navigation-drawer v-model="drawer" absolute bottom temporary dark app>
       <v-list nav dense>
-        <v-list-item-group
-          v-model="group"
-        >
-          <router-link to="/">
+        <v-list-item-group v-model="group">
+          <router-link class="link" dark to="/">
             <v-list-item>
-              <v-list-item-title> Home </v-list-item-title>
+              <v-list-item-title> Consultar conta </v-list-item-title>
             </v-list-item>
           </router-link>
 
-          <router-link to="/about">
+          <router-link class="link" dark to="/about">
             <v-list-item>
-              <v-list-item-title> About </v-list-item-title>
+              <v-list-item-title> Caadastrar conta </v-list-item-title>
             </v-list-item>
           </router-link>
 
+          <router-link class="link" dark to="/about">
+            <v-list-item>
+              <v-list-item-title> Realizar transfência </v-list-item-title>
+            </v-list-item>
+          </router-link>
         </v-list-item-group>
       </v-list>
     </v-navigation-drawer>
 
-    <v-app-bar color="green darken-1" app>
+    <v-app-bar dark app>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-app-bar-title>Digital Wallet</v-app-bar-title>
     </v-app-bar>
@@ -31,7 +32,7 @@
     <!-- Sizes your content based upon application components -->
     <v-main>
       <!-- Provides the application the proper gutter -->
-      <v-container dark fluid>
+      <v-container fluid>
         <!-- If using vue-router -->
         <router-view />
       </v-container>
@@ -67,5 +68,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
+}
+
+.link {
+  text-decoration-line: none;
+  color: white;
 }
 </style>

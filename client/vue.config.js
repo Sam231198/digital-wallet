@@ -3,6 +3,7 @@ module.exports = {
     'vuetify'
   ],
   devServer: {
-    disableHostCheck: true
+    disableHostCheck: true,
+    proxy: 'http://localhost:8000',
   }
 }
