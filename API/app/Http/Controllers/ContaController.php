@@ -9,8 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Laravel\Lumen\Routing\Controller;
-use phpDocumentor\Reflection\Types\Boolean;
 use stdClass;
+use App\Http\Controllers\UtilController;
 
 class ContaController extends Controller
 {
@@ -19,7 +19,9 @@ class ContaController extends Controller
      * 
      * Função de consulta de de saldo da conta
      * 
-     * @return response
+     * @param Response $response recebe os parametros passado na requisição
+     * 
+     * @return Response
      * 
      */
     public function consultaConta(Request $request): Response
@@ -31,10 +33,10 @@ class ContaController extends Controller
 
         try {
 
-            // autentica o usuario
-            $autenticar = $this->autenticar($request);
-
             $user = (isset($request->cnpj)) ? $request->cnpj : $request->cpf;
+            
+            // autentica o usuario
+            $autenticar = UtilController::autenticar($user, $request->senha);
 
             // retorna os dados do perfil conta e registros
             return response(json_encode(
@@ -57,7 +59,9 @@ class ContaController extends Controller
      * 
      * Função de realização de transferencia
      * 
-     * @return response
+     * @param Response $response recebe os parametros passado na requisição
+     * 
+     * @return Response
      * 
      */
     public function transferencia(Request $request): Response
@@ -68,7 +72,7 @@ class ContaController extends Controller
         try {
 
             // autenticando usuario 
-            $autenticar = $this->autenticar($request);
+            $autenticar = UtilController::autenticar($request->cpf, $request->senha);
 
             // buscando a conta do emissor e receptor
             $contaEmissor = Conta::firstWhere('user', $autenticar->cpf);
@@ -98,7 +102,7 @@ class ContaController extends Controller
             try {
 
                 // verifica se o serviço externo está disponivel
-                $confirmacaoEnvio = $this->verificarURL('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04');
+                $confirmacaoEnvio = UtilController::verificarURL('https://run.mocky.io/v3/b19f7b9f-9cbf-4fc6-ad22-dc30601aec04');
                 if (!$confirmacaoEnvio)
                     return response(json_encode([
                         "message" => "Sistema externo não indisponivel", "variavel" => $confirmacaoEnvio
@@ -155,58 +159,6 @@ class ContaController extends Controller
         } catch (\Throwable $th) {
             return response(json_encode(["message" => $th->getMessage()]), 500);
         }
-    }
-
-
-    /**
-     * 
-     * Função de autenticação do usuario
-     * 
-     * @return Object
-     * 
-     */
-    protected function autenticar($request): Object
-    {
-        $banco = ($request->cpf) ? 'pessoa_fisica' : 'pessoa_juridica';
-        $colum = ($request->cpf) ? 'cpf' : 'cnpj';
-        $value = ($request->cpf) ? $request->cpf : $request->cnpj;
-
-        $perfil = DB::table($banco)
-            ->where([
-                [$colum, '=', $value],
-                ['senha', '=', md5($request->senha)]
-            ])
-            ->get();
-
-        // verifica se retorna algun usuario
-        if (empty($perfil[0]->id))
-            throw new Exception('Erro de autenticação');
-
-        unset($perfil[0]->senha);
-        return $perfil[0];
-    }
-
-
-    /**
-     * 
-     * verifica se se uma url está ativa ou não
-     * 
-     * @return Boolean
-     * 
-     */
-    protected function verificarURL($url): bool
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);             // Inicia uma nova sessão do cURL
-        curl_setopt($curl, CURLOPT_NOBODY, true);          // Define que iremos realizar uma requisição "HEAD"
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, false); // Não exibir a saída no navegador
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false); // Não verificar o certificado do site
-
-        curl_exec($curl);  // Executa a sessão do cURL
-        $status = curl_getinfo($curl, CURLINFO_HTTP_CODE) === 200; // Se a resposta for OK, a URL está ativa
-        curl_close($curl); // Fecha a sessão do cURL
-
-        return $status;
     }
 
     /**

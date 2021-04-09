@@ -11,6 +11,13 @@ use Laravel\Lumen\Routing\Controller;
 class PessoaJuridicaController extends Controller
 {
 
+    /**
+     * 
+     * Função que retorna um autoload em json das informações do Pessoa Jurídica
+     * 
+     * @return response
+     * 
+     */
     public function show(): Response
     {
         $result = PessoaJuridica::all();
@@ -21,6 +28,15 @@ class PessoaJuridicaController extends Controller
         return response($result, 200);
     }
 
+    /**
+     * 
+     * Função de cadastro de Pessoas Jurídica
+     * 
+     * @param Response $response recebe os parametros passado na requisição
+     * 
+     * @return Response
+     * 
+     */
     public function create(Request $request): Response
     {
         $pessoaJuridica = 0;

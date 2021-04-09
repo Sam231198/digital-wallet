@@ -11,10 +11,9 @@ use Laravel\Lumen\Routing\Controller;
 class PessoaFisicaController extends Controller
 {
 
-
     /**
      * 
-     * Função que retorna um autoload em json das informações do PessoaFisica
+     * Função que retorna um autoload em json das informações do Pessoa Física
      * 
      * @return response
      * 
@@ -31,18 +30,11 @@ class PessoaFisicaController extends Controller
 
     /**
      * 
-     * função de cadastro de clentes
+     * Função de cadastro de Pessoas Físicas
      * 
-     * exemplo json:
+     * @param Response $response recebe os parametros passado na requisição
      * 
-     * {
-     *     'nome' => 'Nome Completo',
-     *     'cpf' => '00000000000',
-     *     'email' => 'email@email.com',
-     *     'senha' => 'secret'
-     * }
-     * 
-     * @return response
+     * @return Response
      * 
      */
     public function create(Request $request): Response

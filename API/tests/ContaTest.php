@@ -4,6 +4,8 @@ namespace Test;
 
 use Laravel\Lumen\Testing\DatabaseMigrations;
 use Laravel\Lumen\Testing\DatabaseTransactions;
+use Monolog\Formatter\JsonFormatter;
+
 
 class ContaTest extends TestCase
 {
@@ -18,8 +20,8 @@ class ContaTest extends TestCase
 
         $this->response->assertJsonFragment([
             'cpf' => '06685136162',
-            "email"=>"samuelmarques231198@gmail.com",
-            "nome"=>"Samuel Marques"
+            "email" => "samuelmarques231198@gmail.com",
+            "nome" => "Samuel Marques"
 
             // 'cnpj' => '84814927000155',
             // "email"=>"samuelmarques231198@outlook.com",
@@ -42,4 +44,5 @@ class ContaTest extends TestCase
             'receptor' => '84814927000155'
         ]);
     }
+
 }
