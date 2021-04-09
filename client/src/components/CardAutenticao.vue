@@ -36,7 +36,7 @@ export default {
           : { cnpj: cod, senha: senha };
 
       this.axios
-        .post("http://localhost:8000/conta/consulta", dados)
+        .post("https://8000-crimson-iguana-vq8b8m6l.ws-us03.gitpod.io", dados)
         .then(function (response) {
           console.log(response);
         })
