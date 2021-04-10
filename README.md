@@ -4,7 +4,7 @@ Uma API que simula uma um carteira digital simples que realizar transições ent
 
 ## Tecnologias
 
--  [PHP 8](https://www.php.net/releases/8.0/pt_BR.php)
+-  [PHP 8](https://www.php.net/)
 -  [Composer](https://getcomposer.org/)
 -  [MySQL](https://www.mysql.com/)
 -  [Lumen 8](https://lumen.laravel.com/)

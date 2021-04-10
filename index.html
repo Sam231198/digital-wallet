@@ -48,7 +48,6 @@
     </div>
 
 
-
     <!-- template de consulta de conta  -->
     <template id="consulta-conta">
         <div>
@@ -66,6 +65,11 @@
             </div>
 
             <table class="table">
+                <thead>
+                    <tr class="fs-2 text-center">
+                        <th colspan="2">Perfil</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr v-for="(item, index) in perfil">
                         <th>{{ index }}</th>
@@ -75,6 +79,11 @@
             </table>
 
             <table class="table">
+                <thead>
+                    <tr class="fs-2 text-center">
+                        <th colspan="2">Conta</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr v-for="(item, index) in conta">
                         <th>{{ index }}</th>
@@ -83,44 +92,19 @@
                 </tbody>
             </table>
 
-        </div>
-    </template>
-
-
-    <!-- template de consulta de conta  -->
-    <template id="consulta-conta">
-        <div>
-            <div class="mb-3">
-                <input type="email" class="form-control" v-model="cod" placeholder="CPF ou CNPJ">
-                <div>
-                    <small>Apenas número</small>
-                </div>
-            </div>
-            <div class="mb-3">
-                <input type="password" class="form-control" v-model="senha" placeholder="Senha">
-            </div>
-            <div class="mb-3">
-                <button class="btn btn-success" @click="consulta">consulta</button>
-            </div>
-
             <table class="table">
-                <tbody>
-                    <tr v-for="(item, index) in perfil">
+                <thead>
+                    <tr class="fs-2 text-center">
+                        <th colspan="2">Registros</th>
+                    </tr>
+                </thead>
+                <tbody v-for="(registro, index) in registros" :key="index">
+                    <tr v-for="(item, index) in registro">
                         <th>{{ index }}</th>
                         <td>{{ item }}</td>
                     </tr>
                 </tbody>
             </table>
-
-            <table class="table">
-                <tbody>
-                    <tr v-for="(item, index) in conta">
-                        <th>{{ index }}</th>
-                        <td>{{ item }}</td>
-                    </tr>
-                </tbody>
-            </table>
-
         </div>
     </template>
 
@@ -142,10 +126,19 @@
                 <input type="password" class="form-control" v-model="senha" placeholder="Senha">
             </div>
             <div class="mb-3">
-                <button class="btn btn-success">cadastra</button>
+                <input type="number" class="form-control valor" v-model="saldo" placeholder="Saldo inicial. Exemplo  (1000.00)">
             </div>
 
-            <!-- <table class="table">
+            <div class="mb-3">
+                <button class="btn btn-success" @click="cadastrar">cadastra</button>
+            </div>
+
+            <table class="table">
+                <thead>
+                    <tr class="fs-2 text-center">
+                        <th colspan="2">Perfil</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr v-for="(item, index) in perfil">
                         <th>{{ index }}</th>
@@ -155,19 +148,59 @@
             </table>
 
             <table class="table">
+                <thead>
+                    <tr class="fs-2 text-center">
+                        <th colspan="2">Conta</th>
+                    </tr>
+                </thead>
                 <tbody>
                     <tr v-for="(item, index) in conta">
                         <th>{{ index }}</th>
                         <td>{{ item }}</td>
                     </tr>
                 </tbody>
-            </table> -->
+            </table>
         </div>
     </template>
 
     <template id="transferencia">
         <div>
-            teste
+            <div>
+                <div class="mb-3">
+                    <input type="text" class="form-control" v-model="cpf" placeholder="CPF do Emissor">
+                    <div>
+                        <small>Apenas número</small>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <input type="receptor" class="form-control" v-model="receptor"
+                        placeholder="CPF ou CNPJ do receptor">
+                </div>
+                <div class="mb-3">
+                    <input type="password" class="form-control" v-model="senha" placeholder="Senha">
+                </div>
+                <div class="mb-3">
+                    <input type="number" class="form-control valor" v-model="valor" placeholder="Valor a ser transferido. Exemplo (1000.00)">
+                </div>
+
+                <div class="mb-3">
+                    <button class="btn btn-success" @click="transferir">transferir</button>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr class="fs-2 text-center">
+                            <th colspan="2">Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in registro">
+                            <th>{{ index }}</th>
+                            <td>{{ item }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </template>
 
@@ -189,7 +222,7 @@
                     senha: '',
                     perfil: {},
                     conta: {},
-                    registro: []
+                    registros: []
                 }
             },
             methods: {
@@ -204,9 +237,9 @@
                             let dados = JSON.parse(result)
                             this.perfil = dados.perfil
                             this.conta = dados.conta
-                            this.registro = dados.registro
+                            this.registros = dados.registro
 
-                            console.log(dados.perfil)
+                            console.log(this.registros)
                         })
 
                 }
@@ -221,37 +254,95 @@
                     email: '',
                     cod: '',
                     senha: '',
+                    saldo: '',
                     perfil: {},
-                    conta: {},
-                    registro: []
+                    conta: {}
                 }
-            },
+            }, methods: {
+                cadastrar: function () {
+                    let dados = this.cod.length === 11
+                        ? {
+                            cpf: this.cod,
+                            senha: this.senha,
+                            nome: this.nome,
+                            email: this.email,
+                            saldo: this.saldo,
+                        }
+                        : {
+                            cnpj: this.cod,
+                            senha: this.senha,
+                            nome: this.nome,
+                            email: this.email,
+                            saldo: this.saldo,
+                        }
+
+                    let tipo = this.cod.length === 11
+                        ? 'pf' : 'pj'
+
+                    $.post(`http://localhost:8000/${tipo}/cadastrar`,
+                        dados,
+                        result => {
+                            let dados = JSON.parse(result)
+                            this.perfil = dados.perfil
+                            this.conta = dados.conta
+
+                            console.log(dados)
+                        })
+
+                }
+            }
         }
 
         const Transferencia = {
-            template: document.getElementById('transferencia'),
+            template: document.getElementById('transferencia')
+            ,
+            data: () => {
+                return {
+                    cpf: '',
+                    senha: '',
+                    valor: 0.0,
+                    receptor: '',
+                    registro: {}
+                }
+            }, methods: {
+                transferir: function () {
+
+                    $.post('http://localhost:8000/conta/transferencia',
+                    {
+                        cpf: this.cpf,
+                        senha: this.senha,
+                        valor: this.valor,
+                        receptor: this.receptor,
+                    },
+                        result => {
+                            let dados = JSON.parse(result)
+                            this.registro = dados.registro
+                        })
+
+                }
+            }
         }
 
-        var app = new Vue({
-            el: '#app',
-            data: {
-                showConsulta: true,
-                showCadastro: false,
-                showTransferencia: false,
-            },
-            methods: {
-                show: function (value) {
-                    this.showConsulta = value === "consulta" ? true : false
-                    this.showCadastro = value === "cadastro" ? true : false
-                    this.showTransferencia = value === "transferencia" ? true : false
+        const app = new Vue({
+                el: '#app',
+                data: {
+                    showConsulta: true,
+                    showCadastro: false,
+                    showTransferencia: false,
+                },
+                methods: {
+                    show: function (value) {
+                        this.showConsulta = value === "consulta" ? true : false
+                        this.showCadastro = value === "cadastro" ? true : false
+                        this.showTransferencia = value === "transferencia" ? true : false
+                    }
+                },
+                components: {
+                    'cadastro-conta': CadastroConta,
+                    'consulta-conta': ConsultaConta,
+                    'transferencia-tmpl': Transferencia
                 }
-            },
-            components: {
-                'cadastro-conta': CadastroConta,
-                'consulta-conta': ConsultaConta,
-                'transferencia-tmpl': Transferencia
-            }
-        })
+            })
     </script>
 </body>
 
