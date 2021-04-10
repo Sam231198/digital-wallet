@@ -4,32 +4,43 @@ Uma API que simula uma um carteira digital simples que realizar transições ent
 
 ## Tecnologias
 
--  [PHP 8](https://www.php.net/)
+-  [PHP 8](https://www.php.net/releases/8.0/pt_BR.php)
 -  [Composer](https://getcomposer.org/)
 -  [MySQL](https://www.mysql.com/)
 -  [Lumen 8](https://lumen.laravel.com/)
 
-## Rodar Localmente
-
-Faça o clone desse repositório em sua maquina local:
+## Rodar a aplicação
+Nossa aplicação rodará localmente na sua maquina para isso vamos seguir o passo a passo. Primeiro faça o clone desse repositório em sua maquina local:
 ```bash
 $ git clone https://github.com/Sam231198/digital_wallet
 ```
 
-Depois que o clone do projeto estiver concluido, dentro da pasta raiz do projeto rode o `composer` para instalar as dependências:
+Depois que o clone do projeto estiver concluído, dentro da pasta raiz do projeto rode o `composer` para instalar as dependências:
 ```bash
 $ cd digital_wallet
 $ composer install
 ```
 
-Em seguida rode a `migrate` para gerar o banco:
+Vamos rodar também o `compser dump-autoload` para fazer o carregamento das classes de forma automática:
+```bash
+$ composer dump-autoload
+```
+
+### Banco de Dados
+Para esse exemplo vamos utilizar o MySQL, mas você pode usar outro banco de sua preferência, basta alterar as configurações no  arquivo `.env` da API. Leia mais a [documentação do Lumen](https://lumen.laravel.com/docs/8.x/database#configuration) e a [documentação do Laravel](https://laravel.com/docs/8.x/database#configuration).  O nome do nosso banco será `digital_wallet` e usaremos as configurações de autenticação padrão, usuário `root` e senha fica em branca.
+
+Para gerar as tabelas da nossa aplicação fazemos rodar as `migrations` e pronto, a parte de banco de dados da aplicação está ok:
 ```php
 $ php  artisan  migrate
 ```
-por fim vamos rodar a aplicação:
+
+### Executando
+
+Por fim, após realizar todos os passos anteriores, vamos rodar a aplicação:
 ```php
 $ php  -S  localhost:8000  -t  public
 ```
+> Com isso você será capas de acessar a aplicação através do `localhost:8000`.
 
 ## Utilizando a API
 Para testar os links, utilize um API Client Rest, o [Insominia](https://insomnia.rest/download) é uma ótima opção, mas pode usar o que preferir.
@@ -75,7 +86,7 @@ Para cadastrar uma pessoas jurídica basta fazer uma requisição `POST` para `l
 > Ao final do cadastro será retornado um JSON com as informações da conta.
 
 ### Consultar Conta
-Para consultar a conta, deve se fazer uma requisição `POST` para `localhost:8000/conta/consulta` passando os valores em JSON listados nos exemplos.
+Para consultar a conta, deve se fazer uma requisição `POST` para `localhost:8000/conta/consulta`.
 
 Exemplo de consulta da conta de uma pessoa física:
 ```json
@@ -107,8 +118,19 @@ Para realizar uma transferência é necessário fazer uma requisição `POST` pa
 	"receptor" : "84814927000155"
 }
 ```
-> Será retornado um JSON com informações de registro da transição.
+> Serpa retornado um JSON com informações de registro da transição.
 
 > Apenas a pessoa física ode realizar transferência, pessoa jurídica só pode receber apenas.
 
 > O campo `receptor` recebe tanto CNPJ quanto CPF.
+
+## Testando com a interface simplificada
+Na raiz do nosso repositório tem um arquivo chamado `index.html`, nele possui uma interface simplificada para testar a nossa aplicação. Para utilizar ele basta abrir o arquivo em qualquer navegador. Na parte superior tem três opções de menus para serem testados: Consultar conta, Cadastrar conta, Fazer transferência. Para testar cada opção, é só preencher todos os campos que estiver aparecendo na tela e clicar no botão verde para realizar a solicitação da função da API.
+
+> Claro, a API tem que está rodando localmente.
+
+### Tecnologias
+- [Vue.js](https://vuejs.org/)
+- [Jquery (Ajax)](https://api.jquery.com/jquery.ajax/)
+- [HTML 5](https://api.jquery.com/jquery.ajax/)
+- [Java Script](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
