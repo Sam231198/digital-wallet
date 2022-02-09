@@ -12,12 +12,12 @@ Uma API que simula uma um carteira digital simples que realizar transições ent
 ## Rodar a aplicação
 Nossa aplicação rodará localmente na sua maquina para isso vamos seguir o passo a passo. Primeiro faça o clone desse repositório em sua maquina local:
 ```bash
-$ git clone https://github.com/Sam231198/digital_wallet
+$ git clone https://github.com/Sam231198/digital-wallet
 ```
 
 Depois que o clone do projeto estiver concluído, dentro da pasta raiz do projeto rode o `composer` para instalar as dependências:
 ```bash
-$ cd digital_wallet
+$ cd digital-wallet
 $ composer install
 ```
 
